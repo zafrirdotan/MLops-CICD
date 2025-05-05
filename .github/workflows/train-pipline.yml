@@ -1,0 +1,37 @@
+name: Train Model
+
+on:
+  workflow_run:
+    workflows: ["CI/CD Pipeline"]
+    types:
+      - completed
+
+jobs:
+
+  train:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Pull Docker image
+      run: docker pull ghcr.io/kuyu12/mymodel:latest
+
+    - name: Train model
+      run: |
+        mkdir -p ./models
+        docker run --name ml-training -v ${{ github.workspace }}/data:/app/data -v ${{ github.workspace }}/models:/app/models ghcr.io/kuyu12/mymodel:latest python main.py --data_path /app/data/train.csv --model_path /app/models/model.pkl --type Train
+
+    - name: Upload model
+      uses: actions/upload-artifact@v3
+      with:
+        name: trained-model
+        path: models/
