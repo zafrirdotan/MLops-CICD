@@ -5,7 +5,7 @@ on:
     branches: [main]  # Trigger the workflow on push to the 'master' branch
 
 env:
-  IMAGE_NAME: levep79/mymodel  # Define an environment variable for the Docker image name
+  IMAGE_NAME: levep/mymodel  # Define an environment variable for the Docker image name
 
 jobs:
 
