@@ -23,12 +23,12 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Pull Docker image
-      run: docker pull ghcr.io/kuyu12/mymodel:latest
+      run: docker pull ghcr.io/levep/mymodel:latest
 
     - name: Train model
       run: |
         mkdir -p ./models
-        docker run --name ml-training -v ${{ github.workspace }}/data:/app/data -v ${{ github.workspace }}/models:/app/models ghcr.io/kuyu12/mymodel:latest python main.py --data_path /app/data/train.csv --model_path /app/models/model.pkl --type Train
+        docker run --name ml-training -v ${{ github.workspace }}/data:/app/data -v ${{ github.workspace }}/models:/app/models ghcr.io/levep/mymodel:latest python main.py --data_path /app/data/train.csv --model_path /app/models/model.pkl --type Train
 
     - name: Upload model
       uses: actions/upload-artifact@v3
