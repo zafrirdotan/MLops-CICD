@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
     - name: Log in to GitHub Container Registry
       uses: docker/login-action@v2
@@ -31,7 +31,7 @@ jobs:
         docker run --name ml-training -v ${{ github.workspace }}/data:/app/data -v ${{ github.workspace }}/models:/app/models ghcr.io/levep/mymodel:latest python main.py --data_path /app/data/train.csv --model_path /app/models/model.pkl --type Train
 
     - name: Upload model
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: trained-model
         path: models/
