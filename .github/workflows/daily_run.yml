@@ -45,7 +45,7 @@ jobs:
         docker run --name ml-inference -v ${{ github.workspace }}/${{ steps.download-artifact.outputs.repo-path }}:/app/models -v ${{ github.workspace }}/output:/app/output ghcr.io/levep/mymodel:latest python main.py --data_path /app/data/candy-data.csv --model_path /app/models/model.pkl --type Predict
 
     - name: Upload output
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: model-output
         path: output/
