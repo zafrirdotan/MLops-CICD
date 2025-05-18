@@ -1,49 +1,49 @@
-name: CI/CD Pipeline  # Name of the GitHub Actions workflow
+name: CI/CD Pipeline # Name of the GitHub Actions workflow
 # test
 on:
   push:
-    branches: [main]  # Trigger the workflow on push to the 'master' branch
+    branches: [main] # Trigger the workflow on push to the 'master' branch
+  workflow_dispatch: # Allow manual triggering of the workflow
 
 env:
-  IMAGE_NAME: levep/mymodel  # Define an environment variable for the Docker image name
+  IMAGE_NAME: zafrirdotan/mymodel # Define an environment variable for the Docker image name
 
 jobs:
-
-  test:  # Job to run tests
-    runs-on: ubuntu-latest  # Run this job on the latest Ubuntu runner
+  test: # Job to run tests
+    runs-on: ubuntu-latest # Run this job on the latest Ubuntu runner
 
     steps:
-    - uses: actions/checkout@v3  # Check out the repository code
-    - name: Set up Python  # Set up Python environment
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.9  # Specify Python version 3.9
-    - name: Install dependencies  # Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Run tests  # Run tests using pytest
-      run: |
-        python -m pytest tests/
+      - uses: actions/checkout@v3 # Check out the repository code
+      - name: Set up Python # Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9 # Specify Python version 3.9
+      - name: Install dependencies # Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests # Run tests using pytest
+        run: |
+          python -m pytest tests/
 
-  build-and-push:  # Job to build and push Docker image
-    needs: test  # This job depends on the 'test' job
-    runs-on: ubuntu-latest  # Run this job on the latest Ubuntu runner
+  build-and-push: # Job to build and push Docker image
+    needs: test # This job depends on the 'test' job
+    runs-on: ubuntu-latest # Run this job on the latest Ubuntu runner
     permissions:
-      contents: read  # Permission to read repository contents
-      packages: write  # Permission to write to GitHub Packages
+      contents: read # Permission to read repository contents
+      packages: write # Permission to write to GitHub Packages
 
     steps:
-    - uses: actions/checkout@v3  # Check out the repository code
-    - name: Set up Docker Buildx  # Set up Docker Buildx for building images
-      uses: docker/setup-buildx-action@v2
-    - name: Log in to GitHub Container Registry  # Log in to GitHub Container Registry
-      uses: docker/login-action@v2
-      with:
-        registry: ghcr.io  # GitHub Container Registry URL
-        username: ${{ github.actor }}  # Use the GitHub username
-        password: ${{ secrets.GITHUB_TOKEN }}  # Use a GitHub token from secrets
-    - name: Build and push Docker image  # Build and push the Docker image
-      run: |
-        docker build -t ghcr.io/${{ env.IMAGE_NAME }}:latest .  # Build the Docker image
-        docker push ghcr.io/${{ env.IMAGE_NAME }}:latest  # Push the Docker image to GitHub Container Registry
+      - uses: actions/checkout@v3 # Check out the repository code
+      - name: Set up Docker Buildx # Set up Docker Buildx for building images
+        uses: docker/setup-buildx-action@v2
+      - name: Log in to GitHub Container Registry # Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io # GitHub Container Registry URL
+          username: ${{ github.actor }} # Use the GitHub username
+          password: ${{ secrets.GITHUB_TOKEN }} # Use a GitHub token from secrets
+      - name: Build and push Docker image # Build and push the Docker image
+        run: |
+          docker build -t ghcr.io/${{ env.IMAGE_NAME }}:latest .  # Build the Docker image
+          docker push ghcr.io/${{ env.IMAGE_NAME }}:latest  # Push the Docker image to GitHub Container Registry
